@@ -2,7 +2,6 @@ import streamlit as st
 import joblib
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-from imblearn.over_sampling import SMOTE
 
 # Memuat model yang sudah disimpan
 model = joblib.load('xgboost_obesity_model.pkl')
@@ -31,11 +30,7 @@ def preprocess_data(input_data):
     scaler = StandardScaler()
     input_data[numerical_columns] = scaler.fit_transform(input_data[numerical_columns])
 
-    # Menggunakan SMOTE jika diperlukan (untuk mengatasi ketidakseimbangan kelas)
-    smote = SMOTE(sampling_strategy='auto', random_state=42)
-    X_resampled, _ = smote.fit_resample(input_data[numerical_columns], input_data['Obesity'])
-
-    return X_resampled
+    return input_data
 
 # Fungsi untuk prediksi
 def predict(input_data):
