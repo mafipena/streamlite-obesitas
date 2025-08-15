@@ -69,10 +69,11 @@ with st.form("obesity_form"):
         alcohol = st.selectbox("🍷 Alcohol Consumption?", ["No", "Sometimes", "Frequently", "Always"])
         transportation = st.selectbox("🚶 Transport Type", ["Walking", "Bike", "Motorbike", "Automobile", "Public transportation"])
 
-    submit = st.form_submit_button("🔍 Predict")
+   
 
 # --- PREDIKSI ---
-if submit:
+if st.button("🔍 Predict"):
+    try:
     # Encode data sesuai kebutuhan model
     # Konversi input menjadi float
         input_values = [float(Age), float(Weight), float(NCP), float(FAF), float(SMOKE), float(FAVC), float(CAEC), float(Gender), float(Height), float(FCVC), float(CH2O), float(TUE), float(SCC), float(family_history), float(CALC), float(MTRANS)]
@@ -81,8 +82,8 @@ if submit:
         feature_names = ['Age', 'Weight', 'NCP', 'FAF', 'SMOKE', 'FAVC', 'CAEC', 'Gender', 'Height', 'FCVC', 'CH2O', 'TUE', 'SCC', 'family_history', 'CALC', 'MTRANS']
         input_data = pd.DataFrame([input_values], columns=feature_names)
 
-    # Prediksi
-    prediction = model.predict(input_data)
+        # Prediksi
+        prediction = model.predict(input_data)
 
     # Tampilkan hasil prediksi di tengah dengan card
     st.markdown(
