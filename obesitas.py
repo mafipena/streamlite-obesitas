@@ -1,11 +1,13 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import joblib
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from imblearn.over_sampling import SMOTE
 from xgboost import XGBClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
+
 
 # -----------------------------
 # 1. Konfigurasi Halaman
@@ -27,7 +29,7 @@ st.markdown("""
 # -----------------------------
 @st.cache_data
 def load_data():
-    df = pd.read_csv("Obesity prediction.csv")
+    df = joblib.load("xgboost_obesity_model.pkl")
     return df
 
 df = load_data()
