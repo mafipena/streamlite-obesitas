@@ -103,20 +103,20 @@ if submit:
     user_data = {
         "Age": age,
         "Weight": weight,
-        "MainMeals": main_meals,
-        "PhysicalActivity": physical_activity,
-        "Smoke": smoke,
-        "HighCalorieFood": high_calorie_food,
-        "Snacking": snacking,
+        "NCP": main_meals,
+        "FAF": physical_activity,
+        "SMOKE": smoke,
+        "FAVC": high_calorie_food,
+        "CAEC": snacking,
         "Gender": gender,
         "Height": height,
-        "VegConsumption": veg_consumption,
-        "WaterIntake": water_intake,
-        "TechUsage": tech_usage,
-        "CaloriesMonitor": calories_monitor,
-        "FamilyHistory": family_history,
-        "Alcohol": alcohol,
-        "Transportation": transportation
+        "FCVC": veg_consumption,
+        "CH2O": water_intake,
+        "TUE": tech_usage,
+        "SCC": calories_monitor,
+        "family_history": family_history,
+        "CALC": alcohol,
+        "MTRANS": transportation
     }
 
     input_df = pd.DataFrame([user_data])
