@@ -72,7 +72,7 @@ with st.form("obesity_form"):
    
 
 # --- PREDIKSI ---
-if st.button("🔍 Predict"):
+if st.form_submit_button()("🔍 Predict"):
     try:
         # Encode data sesuai kebutuhan model
         # Konversi input menjadi float
