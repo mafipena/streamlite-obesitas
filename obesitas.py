@@ -18,8 +18,16 @@ def preprocess_data(input_data):
     for col in categorical_columns:
         input_data[col] = label_encoder.fit_transform(input_data[col])
 
-    # Standardisasi fitur numerik
+    # Pastikan kolom numerik benar-benar bertipe numerik
     numerical_columns = ['Age', 'Height', 'Weight', 'veg_consumption', 'water_intake', 'tech_usage', 'main_meals', 'physical_activity']
+    
+    for col in numerical_columns:
+        input_data[col] = pd.to_numeric(input_data[col], errors='coerce')  # Convert to numeric, set invalid parsing to NaN
+
+    # Mengatasi nilai NaN (jika ada) dengan nilai rata-rata kolom
+    input_data[numerical_columns] = input_data[numerical_columns].fillna(input_data[numerical_columns].mean())
+
+    # Standardisasi fitur numerik
     scaler = StandardScaler()
     input_data[numerical_columns] = scaler.fit_transform(input_data[numerical_columns])
 
@@ -96,9 +104,4 @@ if submit:
     relevant_columns = ['Gender', 'Age', 'Height', 'Weight', 'family_history_with_overweight', 'main_meals', 'physical_activity', 'smoke',
                         'high_calorie_food', 'snacking', 'veg_consumption', 'water_intake', 'tech_usage', 'calories_monitor', 'alcohol', 'transportation']
     
-    # Hanya ambil kolom yang relevan
-    input_data = input_data[relevant_columns]
-
-    # Prediksi
-    prediction = predict(input_data)
-    st.write(f'Prediksi Tingkat Obesitas: {prediction[0]}')
+    # Hanya ambil kolom
