@@ -13,13 +13,13 @@ def preprocess_data(input_data):
     label_encoder = LabelEncoder()
 
     # Fitur kategorikal yang perlu di-encode
-    categorical_columns = ['Gender', 'family_history_with_overweight', 'CAEC', 'SCC', 'SMOKE', 'CALC', 'MTRANS']
+    categorical_columns = ['Gender', 'family_history_with_overweight', 'smoke', 'high_calorie_food', 'snacking', 'calories_monitor', 'alcohol', 'transportation']
     
     for col in categorical_columns:
         input_data[col] = label_encoder.fit_transform(input_data[col])
 
     # Standardisasi fitur numerik
-    numerical_columns = ['Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH20', 'FAF', 'TUE']
+    numerical_columns = ['Age', 'Height', 'Weight', 'veg_consumption', 'water_intake', 'tech_usage', 'main_meals', 'physical_activity']
     scaler = StandardScaler()
     input_data[numerical_columns] = scaler.fit_transform(input_data[numerical_columns])
 
