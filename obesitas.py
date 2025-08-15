@@ -82,7 +82,7 @@ if submit:
         input_data = pd.DataFrame([input_values], columns=feature_names)
 
     # Prediksi
-    prediction = model.predict(input_data)[0]
+    prediction = model.predict(input_data)
 
     # Tampilkan hasil prediksi di tengah dengan card
     st.markdown(
