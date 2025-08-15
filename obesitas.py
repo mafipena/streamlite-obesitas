@@ -30,11 +30,20 @@ div.stButton > button {
     padding: 0.5rem 1rem;
     font-weight: bold;
 }
+.prediction-card {
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+}
 </style>
 """, unsafe_allow_html=True)
 
 # Judul aplikasi
-st.markdown("<h1>🔍 Prediksi Obesitas</h1>", unsafe_allow_html=True)
+st.markdown("<h1>Prediksi Obesitas</h1>", unsafe_allow_html=True)
 
 # --- FORM INPUT ---
 with st.form("obesity_form"):
@@ -77,4 +86,7 @@ if submit:
     # Prediksi
     prediction = model.predict(data)[0]
 
-    st.markdown(f"<h2 style='text-align:center;'>Hasil Prediksi: {prediction}</h2>", unsafe_allow_html=True)
+    # Tampilkan hasil prediksi di tengah dengan card
+    st.markdown(
+        f"<div class='prediction-card'>🎯 <br> Hasil Prediksi: <b>{prediction}</b></div>",
+        unsafe_allow_html=True)
