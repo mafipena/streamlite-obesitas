@@ -14,19 +14,20 @@ def preprocess_data(input_data):
     # Fitur kategorikal yang perlu di-encode
     categorical_columns = ['Gender', 'family_history_with_overweight', 'smoke', 'high_calorie_food', 'snacking', 'calories_monitor', 'alcohol', 'transportation']
     
-    # Pastikan setiap fitur kategorikal di-encode dengan benar
     for col in categorical_columns:
         input_data[col] = label_encoder.fit_transform(input_data[col])
-    
-    st.write(f"Encoded Data: {input_data[categorical_columns]}")  # Debugging untuk melihat hasil encoding
 
     # Pastikan kolom numerik benar-benar bertipe numerik
     numerical_columns = ['Age', 'Height', 'Weight', 'veg_consumption', 'water_intake', 'tech_usage', 'main_meals', 'physical_activity']
     
-    # Mengisi NaN dengan nilai default atau rata-rata jika ada nilai NaN pada kolom numerik
+    # Mengisi NaN dengan nilai default atau modus jika ada nilai NaN pada kolom numerik
     for col in numerical_columns:
         input_data[col] = pd.to_numeric(input_data[col], errors='coerce')  # Convert to numeric, set invalid parsing to NaN
-        input_data[col].fillna(input_data[col].mode()[0], inplace=True)  # Isi NaN dengan nilai modus (terutama untuk kategori seperti 'main_meals')
+        if input_data[col].isnull().sum() > 0:  # Periksa jika ada NaN di kolom ini
+            if input_data[col].dtype == 'O':  # Jika kolom adalah objek (misalnya, kategorikal)
+                input_data[col].fillna(input_data[col].mode()[0], inplace=True)  # Isi NaN dengan nilai modus
+            else:
+                input_data[col].fillna(input_data[col].mean(), inplace=True)  # Isi NaN dengan nilai rata-rata
 
     st.write(f"Numerical Data (after handling NaN): {input_data[numerical_columns]}")  # Debugging untuk melihat hasil pengisian NaN
 
