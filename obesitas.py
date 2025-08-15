@@ -42,17 +42,18 @@ def preprocess_data(df):
         le = LabelEncoder()
         df[col] = le.fit_transform(df[col])
         label_encoders[col] = le
-    X = df.drop('Obesity', axis=1)
-    y = df['Obesity']
-    return X, y, label_encoders
+    target_col = 'Obesity' if 'Obesity' in df.columns else 'Obesity'
+    X = df.drop(target_col, axis=1)
+    y = df[target_col]
+    return X, y, label_encoders, target_col
 
-X, y, label_encoders = preprocess_data(df)
+X, y, label_encoders, target_col = preprocess_data(df)
 
 # Standarisasi data numerik
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# Menangani data tidak seimbang dengan SMOTE
+# Menangani data tidak seimbang
 smote = SMOTE(random_state=42)
 X_res, y_res = smote.fit_resample(X_scaled, y)
 
@@ -68,28 +69,72 @@ model = XGBClassifier(eval_metric='mlogloss', random_state=42)
 model.fit(X_train, y_train)
 
 # -----------------------------
-# 5. Form Input User
+# 5. Form Input User (2 Kolom)
 # -----------------------------
 st.subheader("📝 Masukkan Data Anda")
-user_data = {}
-for col in X.columns:
-    if col in label_encoders:
-        options = list(label_encoders[col].classes_)
-        user_data[col] = st.selectbox(f"{col}:", options)
-    else:
-        user_data[col] = st.number_input(f"{col}:", value=0.0)
+
+with st.form("obesity_form"):
+    col1, col2 = st.columns(2)
+
+    with col1:
+        age = st.number_input("🧍 Age", min_value=1, max_value=120)
+        weight = st.number_input("⚖ Weight (kg)", min_value=1.0)
+        main_meals = st.slider("🍽 Main Meals (1-4)", 1, 4)
+        physical_activity = st.slider("🏃 Physical Activity (0-3)", 0, 3)
+        smoke = st.selectbox("🚬 Do you smoke?", ["No", "Yes"])
+        high_calorie_food = st.selectbox("🍔 High Calorie Food?", ["No", "Yes"])
+        snacking = st.selectbox("🍪 Snacking?", ["No", "Yes"])
+        gender = st.selectbox("⚧ Gender", ["Male", "Female"])
+
+    with col2:
+        height = st.number_input("📏 Height (m)", min_value=0.5, max_value=2.5)
+        veg_consumption = st.slider("🥦 Vegetable Consumption (1-3)", 1, 3)
+        water_intake = st.slider("💧 Water Intake (1-3)", 1, 3)
+        tech_usage = st.slider("💻 Tech Usage (0-2)", 0, 2)
+        calories_monitor = st.selectbox("📊 Calories Monitor?", ["No", "Yes"])
+        family_history = st.selectbox("👨‍👩‍👧 Family Obesity History?", ["No", "Yes"])
+        alcohol = st.selectbox("🍷 Alcohol Consumption?", ["No", "Yes"])
+        transportation = st.selectbox("🚶 Transport Type", ["Walking", "Bike", "Car", "Public Transport"])
+
+    submit = st.form_submit_button("🔍 Predict")
 
 # -----------------------------
 # 6. Prediksi
 # -----------------------------
-if st.button("🔍 Prediksi"):
-    input_df = pd.DataFrame([user_data])
+if submit:
+    # Membuat dataframe input sesuai urutan kolom
+    input_dict = {
+        "Age": age,
+        "Weight": weight,
+        "Height": height,
+        "MainMeals": main_meals,
+        "PhysicalActivity": physical_activity,
+        "Smoke": smoke,
+        "HighCaloricFood": high_calorie_food,
+        "Snacking": snacking,
+        "Gender": gender,
+        "VegConsumption": veg_consumption,
+        "WaterIntake": water_intake,
+        "TechUsage": tech_usage,
+        "CaloriesMonitor": calories_monitor,
+        "FamilyHistory": family_history,
+        "Alcohol": alcohol,
+        "Transportation": transportation
+    }
+    input_df = pd.DataFrame([input_dict])
+
+    # Encode kolom kategori
     for col in label_encoders:
-        input_df[col] = label_encoders[col].transform(input_df[col])
+        if col in input_df.columns:
+            input_df[col] = label_encoders[col].transform(input_df[col])
+
+    # Standarisasi
     input_scaled = scaler.transform(input_df)
+
+    # Prediksi
     pred = model.predict(input_scaled)[0]
-    pred_label = label_encoders['ObesityCategory'].inverse_transform([pred])[0]
-    
+    pred_label = label_encoders[target_col].inverse_transform([pred])[0]
+
     st.markdown(f"""
     <div style="text-align: center; padding: 20px; border-radius: 10px; background-color: #F4F6F7;">
         <h2>📊 Hasil Prediksi: <span style="color: #E74C3C;">{pred_label}</span></h2>
@@ -103,6 +148,6 @@ if st.checkbox("📈 Tampilkan evaluasi model"):
     y_pred_test = model.predict(X_test)
     report = classification_report(
         y_test, y_pred_test,
-        target_names=label_encoders['ObesityCategory'].classes_
+        target_names=label_encoders[target_col].classes_
     )
     st.text(report)
