@@ -1,87 +1,99 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.model_selection import train_test_split
+from xgboost import XGBClassifier
 import joblib
 
-obes = joblib.load("xgboost_obesity_model.pkl")
+# ==================== LOAD & TRAIN MODEL ==================== #
+@st.cache_resource
+def load_model():
+    # Baca dataset
+    df = pd.read_csv("Obesity prediction.csv")
 
-st.markdown("""
-    <style>
-        .main {
-            background-color: #f5f7fa;
-        }
-        .stButton>button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-size: 16px;
-            border: none;
-        }
-        .stButton>button:hover {
-            background-color: #45a049;
-        }
-        .card {
-            padding: 15px;
-            border-radius: 10px;
-            background-color: #ffffff;
-            box-shadow: 2px 2px 15px rgba(0,0,0,0.1);
-            margin-top: 20px;
-        }
-    </style>
-""", unsafe_allow_html=True)
+    # Ganti sesuai nama kolom target di dataset kamu
+    target_col = "NObeyesdad"
 
-# --- TITLE ---
+    # Pisahkan fitur dan target
+    X = df.drop(columns=[target_col])
+    y = df[target_col]
+
+    # Label encoding untuk kolom kategorikal
+    le_dict = {}
+    for col in X.select_dtypes(include=['object']).columns:
+        le = LabelEncoder()
+        X[col] = le.fit_transform(X[col])
+        le_dict[col] = le
+
+    # Encoding target
+    le_target = LabelEncoder()
+    y = le_target.fit_transform(y)
+
+    # Scaling
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    # Split data
+    X_train, X_test, y_train, y_test = train_test_split(
+        X_scaled, y, test_size=0.2, random_state=42
+    )
+
+    # Model XGBoost
+    model = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss')
+    model.fit(X_train, y_train)
+
+    return model, scaler, le_dict, le_target, list(X.columns)
+
+model, scaler, le_dict, le_target, feature_cols = load_model()
+
+# ==================== UI ==================== #
 st.markdown("<h1 style='text-align: center; color: #333;'>🏥 Obesity Prediction</h1>", unsafe_allow_html=True)
 st.write("Isi data berikut untuk memprediksi tingkat risiko obesitas.")
 
-# --- FORM INPUT ---
 with st.form("obesity_form"):
     col1, col2 = st.columns(2)
 
     with col1:
-        age = st.number_input("🧍 Age", min_value=1, max_value=120)
-        weight = st.number_input("⚖ Weight (kg)", min_value=1.0)
-        main_meals = st.slider("🍽 Main Meals (1-4)", 1, 4)
-        physical_activity = st.slider("🏃 Physical Activity (0-3)", 0, 3)
-        smoke = st.selectbox("🚬 Do you smoke?", ["No", "Yes"])
-        high_calorie_food = st.selectbox("🍔 High Calorie Food?", ["No", "Yes"])
-        snacking = st.selectbox("🍪 Snacking?", ["No", "Yes"])
-        gender = st.selectbox("⚧ Gender", ["Male", "Female"])
+        Age = st.number_input("🧍 Age", min_value=1, max_value=120)
+        Weight = st.number_input("⚖ Weight (kg)", min_value=1.0)
+        Main_meals = st.slider("🍽 Main Meals (1-4)", 1, 4)
+        Physical_activity = st.slider("🏃 Physical Activity (0-3)", 0, 3)
+        Smoking = st.selectbox("🚬 Do you smoke?", ["No", "Yes"])
+        High_cal = st.selectbox("🍔 High Calorie Food?", ["No", "Yes"])
+        Snacking = st.selectbox("🍪 Snacking?", ["No", "Yes"])
+        Gender = st.selectbox("⚧ Gender", ["Male", "Female"])
 
     with col2:
-        height = st.number_input("📏 Height (m)", min_value=0.5, max_value=2.5)
-        veg_consumption = st.slider("🥦 Vegetable Consumption (1-3)", 1, 3)
-        water_intake = st.slider("💧 Water Intake (1-3)", 1, 3)
-        tech_usage = st.slider("💻 Tech Usage (0-2)", 0, 2)
-        calories_monitor = st.selectbox("📊 Calories Monitor?", ["No", "Yes"])
-        family_history = st.selectbox("👨‍👩‍👧 Family Obesity History?", ["No", "Yes"])
-        alcohol = st.selectbox("🍷 Alcohol Consumption?", ["No", "Yes"])
-        transportation = st.selectbox("🚶 Transport Type", ["Walking", "Bike", "Car", "Public Transport"])
+        Height = st.number_input("📏 Height (m)", min_value=0.5, max_value=2.5)
+        Veg_consume = st.slider("🥦 Vegetable Consumption (1-3)", 1, 3)
+        Water = st.slider("💧 Water Intake (1-3)", 1, 3)
+        Tech_usage = st.slider("💻 Tech Usage (0-2)", 0, 2)
+        Calories_monitor = st.selectbox("📊 Calories Monitor?", ["No", "Yes"])
+        Family_history = st.selectbox("👨‍👩‍👧 Family Obesity History?", ["No", "Yes"])
+        Alcohol = st.selectbox("🍷 Alcohol Consumption?", ["No", "Yes"])
+        Transport = st.selectbox("🚶 Transport Type", ["Walking", "Bike", "Car", "Public Transport"])
 
     submit = st.form_submit_button("🔍 Predict")
 
-# --- PREDICTION ---
+# ==================== PREDICTION ==================== #
 if submit:
-    # Contoh model prediksi dummy
-    bmi = weight / (height ** 2)
-    if bmi < 18.5:
-        result = "Underweight"
-        color = "#5bc0de"
-    elif bmi < 25:
-        result = "Normal weight"
-        color = "#5cb85c"
-    elif bmi < 30:
-        result = "Overweight"
-        color = "#f0ad4e"
-    else:
-        result = "Obese"
-        color = "#d9534f"
+    # Buat dataframe dari input
+    input_data = pd.DataFrame([[Age, Height, Weight, Veg_consume, Main_meals, Water, Tech_usage,
+                                Smoking, Calories_monitor, High_cal, Family_history, Snacking,
+                                Alcohol, Gender, Transport]],
+                              columns=feature_cols)
 
-    st.markdown(f"""
-        <div class="card" style="border-left: 8px solid {color};">
-            <h3>📊 Prediction Result</h3>
-            <p style="font-size:18px;">Your BMI: <b>{bmi:.2f}</b></p>
-            <p style="font-size:20px; color:{color};"><b>{result}</b></p>
-        </div>
-    """, unsafe_allow_html=True)
+    # Encode kategorikal
+    for col in input_data.select_dtypes(include=['object']).columns:
+        le = le_dict[col]
+        input_data[col] = le.transform(input_data[col])
+
+    # Scaling
+    input_scaled = scaler.transform(input_data)
+
+    # Prediksi
+    pred = model.predict(input_scaled)
+    pred_label = le_target.inverse_transform(pred)[0]
+
+    st.success(f"📊 Prediction Result: *{pred_label}*")
