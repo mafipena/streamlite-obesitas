@@ -14,7 +14,11 @@ st.markdown("""
     background: linear-gradient(135deg, #4facfe, #00f2fe);
     color: white;
 }
-h1, h2, h3, h4, h5, h6, p, label {
+h1 {
+    text-align: center;
+    color: white !important;
+}
+h2, h3, h4, h5, h6, p, label {
     color: white !important;
 }
 div.stButton > button {
