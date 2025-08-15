@@ -5,7 +5,7 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 from imblearn.over_sampling import SMOTE
 
 # Memuat model yang sudah disimpan
-model = joblib.load('xgboost_obesity_model.pkl')
+model = joblib.load('obesity_model.pkl')
 
 # Fungsi untuk preprocessing data
 def preprocess_data(input_data):
@@ -63,16 +63,18 @@ with st.form("obesity_form"):
         age = st.number_input("🧍 Usia", min_value=1, max_value=120, value=25)
         weight = st.number_input("⚖ Berat Badan (kg)", min_value=1.0, value=60.0)
         main_meals = st.number_input("🍽 Makanan Utama (1-4)", min_value=1, max_value=4, value=3)
-        physical_activity = st.number_input("🏃 Aktivitas Fisik (0-3)", min_value=0, max_value=3, value=1)
+        physical_activity = st.selectbox("🏃 Aktivitas Fisik", ["Low", "Medium", "High"])
         smoke = st.selectbox("🚬 Apakah Anda Merokok?", ["Tidak", "Ya"])
         high_calorie_food = st.selectbox("🍔 Makanan Tinggi Kalori?", ["Tidak", "Ya"])
         snacking = st.selectbox("🍪 Camilan?", ["Tidak", "Terkadang", "Sering", "Selalu"])
         gender = st.selectbox("⚧ Jenis Kelamin", ["Laki-laki", "Perempuan"])
     with col2:
         height = st.number_input("📏 Tinggi Badan (m)", min_value=0.5, max_value=2.5, value=1.65)
+        
+        # Menggunakan keterangan untuk skala rendah, menengah, dan tinggi
         veg_consumption = st.selectbox("🥦 Konsumsi Sayuran (1-3)", [1, 2, 3])
-        water_intake = st.selectbox("💧 Asupan Air (1-3)", [1, 2, 3])
-        tech_usage = st.selectbox("💻 Penggunaan Teknologi (0-2)", [0, 1, 2])
+        water_intake = st.selectbox("💧 Asupan Air", ["Low", "Medium", "High"])
+        tech_usage = st.selectbox("💻 Penggunaan Teknologi", ["Low", "Medium", "High"])
         calories_monitor = st.selectbox("📊 Memantau Kalori?", ["Tidak", "Ya"])
         family_history = st.selectbox("👨‍👩‍👧 Riwayat Obesitas Keluarga?", ["Tidak", "Ya"])
         alcohol = st.selectbox("🍷 Konsumsi Alkohol?", ["Tidak", "Terkadang", "Sering", "Selalu"])
