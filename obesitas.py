@@ -74,17 +74,15 @@ with st.form("obesity_form"):
 # --- PREDIKSI ---
 if submit:
     # Encode data sesuai kebutuhan model
-    data = pd.DataFrame([[
-        age, weight, main_meals, physical_activity, smoke, high_calorie_food, snacking, gender,
-        height, veg_consumption, water_intake, tech_usage, calories_monitor, family_history, alcohol, transportation
-    ]], columns=[
-        "Age", "Weight", "NCP", "FAF", "SMOKE", "FAVC", "CAEC", "Gender",
-        "Height", "FCVC", "CH2O", "TUE", "SCC", "family_monitor",
-        "CALC", "MTRANS"
-    ])
+    # Konversi input menjadi float
+        input_values = [float(Age), float(Weight), float(NCP), float(FAF), float(SMOKE), float(FAVC), float(CAEC), float(Gender), float(Height), float(FCVC), float(CH2O), float(TUE), float(SCC), float(family_history), float(CALC), float(MTRANS)]
+        
+        # Data fitur untuk prediksi
+        feature_names = ['Age', 'Weight', 'NCP', 'FAF', 'SMOKE', 'FAVC', 'CAEC', 'Gender', 'Height', 'FCVC', 'CH2O', 'TUE', 'SCC', 'family_history', 'CALC', 'MTRANS']
+        input_data = pd.DataFrame([input_values], columns=feature_names)
 
     # Prediksi
-    prediction = model.predict(data)[0]
+    prediction = model.predict(input_data)[0]
 
     # Tampilkan hasil prediksi di tengah dengan card
     st.markdown(
