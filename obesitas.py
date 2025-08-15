@@ -14,8 +14,11 @@ def preprocess_data(input_data):
     # Fitur kategorikal yang perlu di-encode
     categorical_columns = ['Gender', 'family_history_with_overweight', 'smoke', 'high_calorie_food', 'snacking', 'calories_monitor', 'alcohol', 'transportation']
     
+    # Pastikan setiap fitur kategorikal di-encode dengan benar
     for col in categorical_columns:
         input_data[col] = label_encoder.fit_transform(input_data[col])
+    
+    st.write(f"Encoded Data: {input_data[categorical_columns]}")  # Debugging untuk melihat hasil encoding
 
     # Pastikan kolom numerik benar-benar bertipe numerik
     numerical_columns = ['Age', 'Height', 'Weight', 'veg_consumption', 'water_intake', 'tech_usage', 'main_meals', 'physical_activity']
@@ -25,6 +28,8 @@ def preprocess_data(input_data):
 
     # Mengatasi nilai NaN (jika ada) dengan nilai rata-rata kolom
     input_data[numerical_columns] = input_data[numerical_columns].fillna(input_data[numerical_columns].mean())
+
+    st.write(f"Numerical Data (after handling NaN): {input_data[numerical_columns]}")  # Debugging untuk melihat hasil pengisian NaN
 
     # Standardisasi fitur numerik
     scaler = StandardScaler()
@@ -36,7 +41,7 @@ def preprocess_data(input_data):
 def predict(input_data):
     # Melakukan preprocessing data terlebih dahulu
     processed_data = preprocess_data(input_data)
-    st.write(f"Processed Data: {processed_data}")  # Debugging untuk melihat data yang telah diproses
+    st.write(f"Processed Data for Prediction: {processed_data}")  # Debugging untuk melihat data yang telah diproses
     # Melakukan prediksi dengan model
     prediction = model.predict(processed_data)
     return prediction
