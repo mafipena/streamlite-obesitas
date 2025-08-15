@@ -74,8 +74,8 @@ with st.form("obesity_form"):
 # --- PREDIKSI ---
 if st.button("🔍 Predict"):
     try:
-    # Encode data sesuai kebutuhan model
-    # Konversi input menjadi float
+        # Encode data sesuai kebutuhan model
+        # Konversi input menjadi float
         input_values = [float(Age), float(Weight), float(NCP), float(FAF), float(SMOKE), float(FAVC), float(CAEC), float(Gender), float(Height), float(FCVC), float(CH2O), float(TUE), float(SCC), float(family_history), float(CALC), float(MTRANS)]
         
         # Data fitur untuk prediksi
@@ -85,7 +85,11 @@ if st.button("🔍 Predict"):
         # Prediksi
         prediction = model.predict(input_data)
 
-    # Tampilkan hasil prediksi di tengah dengan card
-    st.markdown(
-        f"<div class='prediction-card'>🎯 <br> Hasil Prediksi: <b>{prediction}</b></div>",
-        unsafe_allow_html=True)
+        # Tampilkan hasil prediksi di tengah dengan card
+        st.markdown(
+            f"<div class='prediction-card'>🎯 <br> Hasil Prediksi: <b>{prediction}</b></div>",
+            unsafe_allow_html=True)
+            
+    except Exception as e:
+        # Tampilkan pesan error jika terjadi masalah
+        st.error(f"Terjadi error: {e}")
