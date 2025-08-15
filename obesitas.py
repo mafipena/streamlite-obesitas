@@ -5,7 +5,7 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 from imblearn.over_sampling import SMOTE
 
 # Memuat model yang sudah disimpan
-model = joblib.load('obesity_model.pkl')
+model = joblib.load('xgboost_obesity_model.pkl')
 
 # Fungsi untuk preprocessing data
 def preprocess_data(input_data):
