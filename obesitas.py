@@ -89,11 +89,10 @@ if submit:
     # Membuat dataframe untuk inputan
     input_data = pd.DataFrame([[gender, age, height, weight, family_history, main_meals, physical_activity, smoke,
                                 high_calorie_food, snacking, veg_consumption, water_intake, tech_usage, calories_monitor, alcohol, transportation]],
-                              columns=['Gender', 'Age', 'Height', 'Weight', 'family_history_with_overweight', 'FAVC', 'FCVC', 'SMOKE',
-                                       'CALC', 'NCP', 'CH20', 'TUE', 'SCC', 'FAF', 'MTRANS'])
+                              columns=['Gender', 'Age', 'Height', 'Weight', 'family_history_with_overweight', 'main_meals', 'physical_activity', 'smoke',
+                                       'high_calorie_food', 'snacking', 'veg_consumption', 'water_intake', 'tech_usage', 'calories_monitor', 'alcohol', 'transportation'])
     
     # Pastikan kolom yang digunakan sesuai dengan input yang ada
-    # Kolom yang relevan dengan input harus dipasangkan dengan benar
     relevant_columns = ['Gender', 'Age', 'Height', 'Weight', 'family_history_with_overweight', 'main_meals', 'physical_activity', 'smoke',
                         'high_calorie_food', 'snacking', 'veg_consumption', 'water_intake', 'tech_usage', 'calories_monitor', 'alcohol', 'transportation']
     
