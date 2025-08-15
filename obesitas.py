@@ -92,6 +92,14 @@ if submit:
                               columns=['Gender', 'Age', 'Height', 'Weight', 'family_history_with_overweight', 'FAVC', 'FCVC', 'SMOKE',
                                        'CALC', 'NCP', 'CH20', 'TUE', 'SCC', 'FAF', 'MTRANS'])
     
+    # Pastikan kolom yang digunakan sesuai dengan input yang ada
+    # Kolom yang relevan dengan input harus dipasangkan dengan benar
+    relevant_columns = ['Gender', 'Age', 'Height', 'Weight', 'family_history_with_overweight', 'main_meals', 'physical_activity', 'smoke',
+                        'high_calorie_food', 'snacking', 'veg_consumption', 'water_intake', 'tech_usage', 'calories_monitor', 'alcohol', 'transportation']
+    
+    # Hanya ambil kolom yang relevan
+    input_data = input_data[relevant_columns]
+
     # Prediksi
     prediction = predict(input_data)
     st.write(f'Prediksi Tingkat Obesitas: {prediction[0]}')
