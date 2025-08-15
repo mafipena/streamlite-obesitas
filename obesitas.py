@@ -15,9 +15,8 @@ def load_model():
         model = joblib.load("xgboost_obesity_model.pkl")
         scaler = joblib.load("scaler.pkl")
         le_dict = joblib.load("le_dict.pkl")
-        le_target = joblib.load("le_target.pkl")
-        feature_cols = joblib.load("feature_cols.pkl")
         le_target = joblib.load("obesity_category_mapping.pkl")
+        feature_cols = joblib.load("feature_cols.pkl")
         return model, scaler, le_dict, le_target, feature_cols
     except FileNotFoundError as e:
         st.error(f"Error: File model atau preprocessing tidak ditemukan. Pastikan file .pkl berada di direktori yang sama. Detail: {e}")
