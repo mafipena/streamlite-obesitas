@@ -42,8 +42,8 @@ def preprocess_data(df):
         le = LabelEncoder()
         df[col] = le.fit_transform(df[col])
         label_encoders[col] = le
-    X = df.drop('ObesityCategory', axis=1)
-    y = df['ObesityCategory']
+    X = df.drop('Obesity', axis=1)
+    y = df['Obesity']
     return X, y, label_encoders
 
 X, y, label_encoders = preprocess_data(df)
