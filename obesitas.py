@@ -7,9 +7,7 @@ import numpy as np
 model = joblib.load("xgboost_obesity_model.pkl")
 
 # CSS tampilan
-st.markdown(""""
-<div style="text-align: center; padding: 20px;">
-    <h1 style="color: #2E86C1;">🍔 Prediksi Tingkat Obesitas</h1>
+st.markdown("""
 <style>
 .stApp {
     font-family: 'Arial', sans-serif;
@@ -29,12 +27,10 @@ div.stButton > button {
     font-weight: bold;
 }
 </style>
-"""", unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # Judul aplikasi
-st.title("🔍 Prediksi Obesitas")
-
-
+st.markdown("<h1>🔍 Prediksi Obesitas</h1>", unsafe_allow_html=True)
 
 # --- FORM INPUT ---
 with st.form("obesity_form"):
