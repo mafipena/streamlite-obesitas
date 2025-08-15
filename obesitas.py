@@ -5,7 +5,7 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 from imblearn.over_sampling import SMOTE
 
 # Memuat model yang sudah disimpan
-model = joblib.load('xgboost_obesity_model.pkl')
+model = joblib.load('obesity_model.pkl')
 
 # Fungsi untuk preprocessing data
 def preprocess_data(input_data):
@@ -41,6 +41,7 @@ def preprocess_data(input_data):
 def predict(input_data):
     # Melakukan preprocessing data terlebih dahulu
     processed_data = preprocess_data(input_data)
+    st.write(f"Processed Data: {processed_data}")  # Debugging untuk melihat data yang telah diproses
     # Melakukan prediksi dengan model
     prediction = model.predict(processed_data)
     return prediction
@@ -104,4 +105,12 @@ if submit:
     relevant_columns = ['Gender', 'Age', 'Height', 'Weight', 'family_history_with_overweight', 'main_meals', 'physical_activity', 'smoke',
                         'high_calorie_food', 'snacking', 'veg_consumption', 'water_intake', 'tech_usage', 'calories_monitor', 'alcohol', 'transportation']
     
-    # Hanya ambil kolom
+    # Hanya ambil kolom yang relevan
+    input_data = input_data[relevant_columns]
+
+    # Debugging untuk memeriksa data input
+    st.write(f"Input Data: {input_data}")
+
+    # Prediksi
+    prediction = predict(input_data)
+    st.write(f'Prediksi Tingkat Obesitas: {prediction[0]}')
