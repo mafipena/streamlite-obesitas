@@ -23,11 +23,10 @@ def preprocess_data(input_data):
     # Pastikan kolom numerik benar-benar bertipe numerik
     numerical_columns = ['Age', 'Height', 'Weight', 'veg_consumption', 'water_intake', 'tech_usage', 'main_meals', 'physical_activity']
     
+    # Mengisi NaN dengan nilai default atau rata-rata jika ada nilai NaN pada kolom numerik
     for col in numerical_columns:
         input_data[col] = pd.to_numeric(input_data[col], errors='coerce')  # Convert to numeric, set invalid parsing to NaN
-
-    # Mengatasi nilai NaN (jika ada) dengan nilai rata-rata kolom
-    input_data[numerical_columns] = input_data[numerical_columns].fillna(input_data[numerical_columns].mean())
+        input_data[col].fillna(input_data[col].mode()[0], inplace=True)  # Isi NaN dengan nilai modus (terutama untuk kategori seperti 'main_meals')
 
     st.write(f"Numerical Data (after handling NaN): {input_data[numerical_columns]}")  # Debugging untuk melihat hasil pengisian NaN
 
